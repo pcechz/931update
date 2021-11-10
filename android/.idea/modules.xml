@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/android.iml" filepath="$PROJECT_DIR$/.idea/modules/android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/android.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/android.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/2041649328/android.connectivity_plus.iml" filepath="$PROJECT_DIR$/.idea/modules/2041649328/android.connectivity_plus.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/454583880/android.device_info.iml" filepath="$PROJECT_DIR$/.idea/modules/454583880/android.device_info.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/1081811069/android.fluttertoast.iml" filepath="$PROJECT_DIR$/.idea/modules/1081811069/android.fluttertoast.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-1126335629/android.get_mac.iml" filepath="$PROJECT_DIR$/.idea/modules/-1126335629/android.get_mac.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/1209472664/android.nb_utils.iml" filepath="$PROJECT_DIR$/.idea/modules/1209472664/android.nb_utils.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-694657572/android.path_provider.iml" filepath="$PROJECT_DIR$/.idea/modules/-694657572/android.path_provider.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/313874313/android.shared_preferences.iml" filepath="$PROJECT_DIR$/.idea/modules/313874313/android.shared_preferences.iml" />
+    </modules>
+  </component>
+</project>
