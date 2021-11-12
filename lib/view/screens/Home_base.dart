@@ -1,4 +1,5 @@
 import 'package:creditswitch/utils/colors.dart';
+import 'package:creditswitch/view/screens/NotificationAll.dart';
 import 'package:creditswitch/view/screens/Transaction.dart';
 import 'package:creditswitch/view/screens/home_screen.dart';
 import 'package:creditswitch/view/screens/wallet_screen.dart';
@@ -20,7 +21,7 @@ class _HomeBaseState extends State<HomeBase> {
     Transaction(),
     HomeScreen(),
     WalletScreen(),
-    WalletScreen()
+    NotificationAll()
   ];
   Text subheading(String title) {
     return Text(

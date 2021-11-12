@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get_mac/get_mac.dart';
+import 'package:loading_overlay/loading_overlay.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:http/http.dart' as http;
 import 'package:form_validator/form_validator.dart';
@@ -78,139 +79,146 @@ class SetPasswordState extends State<SetPassword> {
   Widget build(BuildContext context) {
     return Scaffold(body: LayoutBuilder(
         builder: (BuildContext context, BoxConstraints viewportConstraints) {
-      return SingleChildScrollView(
-          child: ConstrainedBox(
-              constraints: BoxConstraints(
-                minHeight: viewportConstraints.maxHeight,
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                    child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(14),
-                            topRight: Radius.circular(14),
-                            bottomLeft: Radius.circular(14),
-                            bottomRight: Radius.circular(14),
+      return LoadingOverlay(
+        isLoading: isApiCallProcess,
+        opacity: 0.6,
+        progressIndicator: CircularProgressIndicator(),
+        child: SingleChildScrollView(
+            child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minHeight: viewportConstraints.maxHeight,
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                      child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(14),
+                              topRight: Radius.circular(14),
+                              bottomLeft: Radius.circular(14),
+                              bottomRight: Radius.circular(14),
+                            ),
+                            color: Color.fromRGBO(255, 255, 255, 1),
                           ),
-                          color: Color.fromRGBO(255, 255, 255, 1),
-                        ),
-                        child: Column(children: <Widget>[
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Image.asset(
-                                'assets/logo.png',
-                                height: 118.0,
-                                width: 118.0,
-                                fit: BoxFit.cover,
-                              ),
-                            ],
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Align(
-                                alignment: Alignment.center,
-                                child: Text(
-                                  "Complete Your Registration",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 16,
-                                      color: fa_color_secondary),
-                                  textAlign: TextAlign.left,
+                          child: Column(children: <Widget>[
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Image.asset(
+                                  'assets/logo.png',
+                                  height: 118.0,
+                                  width: 118.0,
+                                  fit: BoxFit.cover,
                                 ),
-                              ),
-                              Align(
-                                alignment: Alignment.center,
-                                child: Text(
-                                  "You are almost there \nFill in the information below to get started.",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 14,
-                                      color: fa_sub_heading),
-                                  textAlign: TextAlign.center,
+                              ],
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Align(
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    "Complete Your Registration",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 16,
+                                        color: fa_color_secondary),
+                                    textAlign: TextAlign.left,
+                                  ),
                                 ),
-                              )
-                            ],
-                          ),
-                          Padding(
-                              padding: EdgeInsets.fromLTRB(21, 20, 0, 0),
-                              child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    SizedBox(
-                                      height: 5,
-                                    ),
-                                    _entryField("PIN", _Passwordcontroller,
-                                        isPassword: true),
-                                    SizedBox(
-                                      height: 5,
-                                    ),
-                                    _entryField(
-                                        "CONFIRM PIN", _conPasswordcontroller,
-                                        isPassword: true),
-                                    SizedBox(
-                                      height: 20,
-                                    ),
-                                    Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: <Widget>[
-                                          Container(
-                                            padding: EdgeInsets.fromLTRB(
-                                                0, 0, 23, 0),
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
-                                            ),
-                                            child: MaterialButton(
-                                              minWidth: 309,
-                                              height: 54,
-                                              onPressed: () {
-                                                setPasswords();
+                                Align(
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    "You are almost there \nFill in the information below to get started.",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 14,
+                                        color: fa_sub_heading),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                )
+                              ],
+                            ),
+                            Padding(
+                                padding: EdgeInsets.fromLTRB(21, 20, 0, 0),
+                                child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      SizedBox(
+                                        height: 5,
+                                      ),
+                                      _entryField("PIN", _Passwordcontroller,
+                                          isPassword: true),
+                                      SizedBox(
+                                        height: 5,
+                                      ),
+                                      _entryField(
+                                          "CONFIRM PIN", _conPasswordcontroller,
+                                          isPassword: true),
+                                      SizedBox(
+                                        height: 20,
+                                      ),
+                                      Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: <Widget>[
+                                            Container(
+                                              padding: EdgeInsets.fromLTRB(
+                                                  0, 0, 23, 0),
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(8),
+                                              ),
+                                              child: MaterialButton(
+                                                minWidth: 309,
+                                                height: 54,
+                                                onPressed: () {
+                                                  setPasswords();
 
-                                                // NewPin(widget.email, _Passwordcontroller.text).launch(context);
-                                              },
-                                              color: fa_color_secondary,
-                                              elevation: 0,
-                                              shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(8)),
-                                              child: Text(
-                                                "COMPLETE REGISTRATION",
-                                                style: TextStyle(
-                                                    fontWeight: FontWeight.w400,
-                                                    fontSize: 15,
-                                                    color: Colors.white),
+                                                  // NewPin(widget.email, _Passwordcontroller.text).launch(context);
+                                                },
+                                                color: fa_color_secondary,
+                                                elevation: 0,
+                                                shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            8)),
+                                                child: Text(
+                                                  "COMPLETE REGISTRATION",
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                      fontSize: 15,
+                                                      color: Colors.white),
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                        ]),
-                                  ])),
-                        ])),
-                  ),
-                  Align(
-                      alignment: Alignment.bottomCenter,
-                      child: FadeAnimation(
-                          2.5,
-                          Image.asset(
-                            'assets/copyright.png',
-                            height: 20.0,
-                            width: 182.0,
-                            fit: BoxFit.cover,
-                          ),
-                          Curves.slowMiddle))
-                ],
-              )));
+                                          ]),
+                                    ])),
+                          ])),
+                    ),
+                    Align(
+                        alignment: Alignment.bottomCenter,
+                        child: FadeAnimation(
+                            2.5,
+                            Image.asset(
+                              'assets/copyright.png',
+                              height: 20.0,
+                              width: 182.0,
+                              fit: BoxFit.cover,
+                            ),
+                            Curves.slowMiddle))
+                  ],
+                ))),
+      );
     }));
   }
 
@@ -234,6 +242,9 @@ class SetPasswordState extends State<SetPassword> {
   }
 
   setPasswords() async {
+    setState(() {
+      isApiCallProcess = true;
+    });
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = prefs.getString("token");
 
@@ -268,6 +279,9 @@ class SetPasswordState extends State<SetPassword> {
           });
         }
       } else if (response.statusCode == 401) {
+        setState(() {
+          isApiCallProcess = false;
+        });
         jsonResponse = json.decode(await response.stream.bytesToString());
         t.Toast.show(jsonResponse["message"].toString(), context,
             duration: t.Toast.LENGTH_LONG,
@@ -310,7 +324,15 @@ class SetPasswordState extends State<SetPassword> {
         print("The error message is: ${jsonResponse["message"].toString()}");
       }
     } else {
-      print("Password don't match");
+      setState(() {
+        isApiCallProcess = false;
+      });
+      print("Pin don't match");
+      t.Toast.show("Pin doesn't match", context,
+          duration: t.Toast.LENGTH_LONG,
+          gravity: t.Toast.BOTTOM,
+          backgroundColor: Colors.red,
+          textColor: Colors.white);
     }
   }
 

@@ -42,6 +42,7 @@ dependencies:
   passcode_screen: ^2.0.0
   date_format: ^2.0.4
   syncfusion_flutter_charts: ^19.3.48
+  loading_overlay: ^0.2.1
 
 
 

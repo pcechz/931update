@@ -7,6 +7,7 @@ import 'package:creditswitch/view/animation/FadeAnimation.dart';
 import 'package:creditswitch/view/screens/SetPassword.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:loading_overlay/loading_overlay.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:pinput/pin_put/pin_put.dart';
 import 'package:http/http.dart' as http;
@@ -53,175 +54,183 @@ class PinAuthState extends State<PinAuth> {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
     return Scaffold(
-        body: Container(
-            width: width,
-            height: height,
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/back.png'),
-                fit: BoxFit.cover,
+        body: LoadingOverlay(
+        isLoading: isApiCallProcess,
+        opacity: 0.6,
+        progressIndicator: CircularProgressIndicator(),
+          child: Container(
+              width: width,
+              height: height,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('assets/back.png'),
+                  fit: BoxFit.cover,
+                ),
               ),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: EdgeInsets.fromLTRB(3.0, height / 3.5, 3.0, 0),
-                  child: Container(
-                      width: width - 6,
-                      height: height / 2.5,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(14),
-                          topRight: Radius.circular(14),
-                          bottomLeft: Radius.circular(14),
-                          bottomRight: Radius.circular(14),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(3.0, height / 3.5, 3.0, 0),
+                    child: Container(
+                        width: width - 6,
+                        height: height / 2.5,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(14),
+                            topRight: Radius.circular(14),
+                            bottomLeft: Radius.circular(14),
+                            bottomRight: Radius.circular(14),
+                          ),
+                          color: Color.fromRGBO(255, 255, 255, 1),
                         ),
-                        color: Color.fromRGBO(255, 255, 255, 1),
-                      ),
-                      child: Stack(children: <Widget>[
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Padding(
-                                padding: EdgeInsets.fromLTRB(0, 45, 0, 10),
-                                child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: <Widget>[
-                                      Text(
-                                        "Account Verification",
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 16,
-                                            color: fa_color_secondary),
-                                      ),
-                                      Align(
-                                        child: Text(
-                                          "Kindly check your email inbox /text messages \n and enter token to activate your account",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.w300,
-                                              fontSize: 13,
-                                              color: fa_sub_heading),
-                                          textAlign: TextAlign.center,
-                                        ),
-                                        alignment: Alignment.center,
-                                      ),
-                                    ])),
-                          ],
-                        ),
-                        Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
+                        child: Stack(children: <Widget>[
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
+                            children: [
                               Padding(
-                                padding: EdgeInsets.fromLTRB(17, 40, 0, 18),
-                                child: PinPut(
-                                  useNativeKeyboard: true,
-                                  // autovalidateMode: AutovalidateMode.onUserInteraction,
-                                  withCursor: true,
-                                  fieldsCount: 5,
-                                  fieldsAlignment:
-                                      MainAxisAlignment.spaceAround,
-                                  textStyle: const TextStyle(
-                                      fontSize: 25.0, color: Colors.black),
-                                  eachFieldMargin: EdgeInsets.all(0),
-                                  eachFieldWidth: 45.0,
-                                  eachFieldHeight: 55.0,
-                                  onSubmit: (String pinn) => pin = pinn,
-                                  focusNode: _pinPutFocusNode,
-                                  controller: _pinPutController,
-                                  submittedFieldDecoration: pinPutDecoration,
-                                  selectedFieldDecoration:
-                                      pinPutDecoration.copyWith(
-                                    color: Colors.white,
-                                    border: Border.all(
-                                      width: 2,
-                                      color: const Color.fromRGBO(
-                                          160, 215, 220, 1),
+                                  padding: EdgeInsets.fromLTRB(0, 45, 0, 10),
+                                  child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: <Widget>[
+                                        Text(
+                                          "Account Verification",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 16,
+                                              color: fa_color_secondary),
+                                        ),
+                                        Align(
+                                          child: Text(
+                                            "Kindly check your email inbox /text messages \n and enter token to activate your account",
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.w300,
+                                                fontSize: 13,
+                                                color: fa_sub_heading),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                          alignment: Alignment.center,
+                                        ),
+                                      ])),
+                            ],
+                          ),
+                          Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Padding(
+                                  padding: EdgeInsets.fromLTRB(17, 40, 0, 18),
+                                  child: PinPut(
+                                    useNativeKeyboard: true,
+                                    // autovalidateMode: AutovalidateMode.onUserInteraction,
+                                    withCursor: true,
+                                    fieldsCount: 5,
+                                    fieldsAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    textStyle: const TextStyle(
+                                        fontSize: 25.0, color: Colors.black),
+                                    eachFieldMargin: EdgeInsets.all(0),
+                                    eachFieldWidth: 45.0,
+                                    eachFieldHeight: 55.0,
+                                    onSubmit: (String pinn) => pin = pinn,
+                                    focusNode: _pinPutFocusNode,
+                                    controller: _pinPutController,
+                                    submittedFieldDecoration: pinPutDecoration,
+                                    selectedFieldDecoration:
+                                        pinPutDecoration.copyWith(
+                                      color: Colors.white,
+                                      border: Border.all(
+                                        width: 2,
+                                        color: const Color.fromRGBO(
+                                            160, 215, 220, 1),
+                                      ),
+                                    ),
+                                    followingFieldDecoration: pinPutDecoration,
+                                    pinAnimationType: PinAnimationType.scale,
+                                  ),
+                                ),
+                                Container(
+                                  padding: EdgeInsets.only(
+                                      left: 16, right: 16, top: 16),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: MaterialButton(
+                                    minWidth:
+                                        MediaQuery.of(context).size.width - 32,
+                                    height: 54,
+                                    onPressed: () {
+                                      verifyOTP(pin);
+                                    },
+                                    color: fa_color_secondary,
+                                    elevation: 0,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8)),
+                                    child: Text(
+                                      "Verify OTP",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: 15,
+                                          color: Colors.white),
                                     ),
                                   ),
-                                  followingFieldDecoration: pinPutDecoration,
-                                  pinAnimationType: PinAnimationType.scale,
                                 ),
-                              ),
-                              Container(
-                                padding: EdgeInsets.only(
-                                    left: 16, right: 16, top: 16),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: MaterialButton(
-                                  minWidth:
-                                      MediaQuery.of(context).size.width - 32,
-                                  height: 54,
-                                  onPressed: () {
-                                    verifyOTP(pin);
-                                  },
-                                  color: fa_color_secondary,
-                                  elevation: 0,
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8)),
-                                  child: Text(
-                                    "Verify OTP",
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w400,
-                                        fontSize: 15,
-                                        color: Colors.white),
+                              ]),
+                          Align(
+                              alignment: Alignment.bottomCenter,
+                              child: InkWell(
+                                onTap: () {
+                                  ResendOTP();
+                                },
+                                child: Padding(
+                                  padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
+                                  child: RichText(
+                                    text: TextSpan(
+                                      text: "Experiencing any issues? ",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: 13,
+                                          color: fa_color_secondary),
+                                      children: <TextSpan>[
+                                        TextSpan(
+                                            text: 'RESEND OTP',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.w400,
+                                                fontSize: 13,
+                                                decoration:
+                                                    TextDecoration.underline,
+                                                color: fa_color_secondary))
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ]),
-                        Align(
-                            alignment: Alignment.bottomCenter,
-                            child: InkWell(
-                              onTap: () {
-                                ResendOTP();
-                              },
-                              child: Padding(
-                                padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
-                                child: RichText(
-                                  text: TextSpan(
-                                    text: "Experiencing any issues? ",
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w400,
-                                        fontSize: 13,
-                                        color: fa_color_secondary),
-                                    children: <TextSpan>[
-                                      TextSpan(
-                                          text: 'RESEND OTP',
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.w400,
-                                              fontSize: 13,
-                                              decoration:
-                                                  TextDecoration.underline,
-                                              color: fa_color_secondary))
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ))
-                      ])),
-                ),
-                // Align(
-                //     alignment: Alignment.bottomCenter,
-                //     child: FadeAnimation(
-                //         2.5,
-                //         Image.asset(
-                //           'copyright.png',
-                //           height: 48.0,
-                //           width: 182.0,
-                //           fit: BoxFit.cover,
-                //         ),
-                //         Curves.slowMiddle))
-              ],
-            )));
+                              ))
+                        ])),
+                  ),
+                  // Align(
+                  //     alignment: Alignment.bottomCenter,
+                  //     child: FadeAnimation(
+                  //         2.5,
+                  //         Image.asset(
+                  //           'copyright.png',
+                  //           height: 48.0,
+                  //           width: 182.0,
+                  //           fit: BoxFit.cover,
+                  //         ),
+                  //         Curves.slowMiddle))
+                ],
+              )),
+        ));
   }
 
   ResendOTP() async {
+      setState(() {
+            isApiCallProcess = true;
+          });
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = prefs.getString("token");
 
@@ -243,12 +252,19 @@ class PinAuthState extends State<PinAuth> {
         if (jsonResponse != null) {
           setState(() {
             isApiCallProcess = false;
-            SetPassword().launch(context);
-
-            // PinAuth(email, phone).launch(context);
+        
           });
+           t.Toast.show(jsonResponse["message"].toString(), context,
+          duration: t.Toast.LENGTH_LONG,
+          gravity: t.Toast.BOTTOM,
+          backgroundColor: Colors.green[500],
+          textColor: Colors.white);
+
         }
       } else if (response.statusCode == 401) {
+          setState(() {
+            isApiCallProcess = false;
+          });
       jsonResponse = json.decode(await response.stream.bytesToString());
       t.Toast.show(jsonResponse["message"].toString(), context,
           duration: t.Toast.LENGTH_LONG,
@@ -296,6 +312,9 @@ class PinAuthState extends State<PinAuth> {
   }
 
   verifyOTP(String pin) async {
+      setState(() {
+            isApiCallProcess = true;
+          });
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = prefs.getString("token");
 

@@ -12,6 +12,7 @@ import 'package:creditswitch/view/screens/auth/landing_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:form_validator/form_validator.dart';
+import 'package:loading_overlay/loading_overlay.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:http/http.dart' as http;
 import 'package:toast/toast.dart' as t;
@@ -25,11 +26,12 @@ class ReturnLoginScreen extends StatefulWidget {
 
 class ReturnLoginScreenState extends State<ReturnLoginScreen> {
   bool onboarding = false;
-  bool isApiCallProcess = false;
   bool hidePassword = true;
   TextEditingController _emailcontroller = TextEditingController();
   TextEditingController _passwordcontroller = TextEditingController();
   final formKey = new GlobalKey<FormState>();
+
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -48,314 +50,327 @@ class ReturnLoginScreenState extends State<ReturnLoginScreen> {
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
-          body: Container(
-              width: width,
-              height: height,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage('assets/back.png'),
-                  fit: BoxFit.cover,
-                ),
+          body: LoadingOverlay(
+        isLoading: _isLoading,
+        opacity: 0.6,
+        progressIndicator: CircularProgressIndicator(),
+        child: Container(
+            width: width,
+            height: height,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('assets/back.png'),
+                fit: BoxFit.cover,
               ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(3.0, height / 6, 3.0, 0),
-                    child: Container(
-                        width: width - 6,
-                        height: height - ((height / 3.97)),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(14),
-                            topRight: Radius.circular(14),
-                            bottomLeft: Radius.circular(14),
-                            bottomRight: Radius.circular(14),
-                          ),
-                          color: Color.fromRGBO(255, 255, 255, 1),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: EdgeInsets.fromLTRB(3.0, height / 6, 3.0, 0),
+                  child: Container(
+                      width: width - 6,
+                      height: height - ((height / 3.97)),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(14),
+                          topRight: Radius.circular(14),
+                          bottomLeft: Radius.circular(14),
+                          bottomRight: Radius.circular(14),
                         ),
-                        child: Stack(children: <Widget>[
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
+                        color: Color.fromRGBO(255, 255, 255, 1),
+                      ),
+                      child: Stack(children: <Widget>[
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              'assets/logo.png',
+                              height: 118.0,
+                              width: 118.0,
+                              fit: BoxFit.cover,
+                            ),
+                          ],
+                        ),
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(
+                              21, context.height() / 5, 0, 0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              Image.asset(
-                                'assets/logo.png',
-                                height: 118.0,
-                                width: 118.0,
-                                fit: BoxFit.cover,
+                              Text(
+                                "Welcome Back",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 18,
+                                    color: fa_color_secondary),
+                              ),
+                              Text(
+                                "Continue to Sign In!",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 14,
+                                    color: fa_sub_heading),
                               ),
                             ],
                           ),
-                          Padding(
+                        ),
+                        Padding(
                             padding: EdgeInsets.fromLTRB(
-                                21, context.height() / 5, 0, 0),
+                                21, context.height() / 3.5, 0, 0),
                             child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "Welcome Back",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w700,
-                                      fontSize: 18,
-                                      color: fa_color_secondary),
-                                ),
-                                Text(
-                                  "Continue to Sign In!",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 14,
-                                      color: fa_sub_heading),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Padding(
-                              padding: EdgeInsets.fromLTRB(
-                                  21, context.height() / 3.5, 0, 0),
-                              child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    _entryField("EMAIL", _emailcontroller),
-                                    SizedBox(
-                                      height: 5,
-                                    ),
-                                    _entryField("PASSWORD", _passwordcontroller,
-                                        isPassword: true),
-                                    SizedBox(
-                                      height: 5,
-                                    ),
-                                    Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: <Widget>[
-                                          Container(
-                                            padding: EdgeInsets.fromLTRB(
-                                                0, 0, 23, 0),
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
-                                            ),
-                                            child: MaterialButton(
-                                              minWidth: 309,
-                                              height: 54,
-                                              onPressed: () {
-                                                login();
-                                              },
-                                              color: fa_color_secondary,
-                                              elevation: 0,
-                                              shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(8)),
-                                              child: Text(
-                                                "Login",
-                                                style: TextStyle(
-                                                    fontWeight: FontWeight.w400,
-                                                    fontSize: 15,
-                                                    color: Colors.white),
-                                              ),
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  _entryField("EMAIL", _emailcontroller),
+                                  SizedBox(
+                                    height: 5,
+                                  ),
+                                  _entryField("PASSWORD", _passwordcontroller,
+                                      isPassword: true),
+                                  SizedBox(
+                                    height: 5,
+                                  ),
+                                  Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: <Widget>[
+                                        Container(
+                                          padding:
+                                              EdgeInsets.fromLTRB(0, 0, 23, 0),
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(8),
+                                          ),
+                                          child: MaterialButton(
+                                            minWidth: 309,
+                                            height: 54,
+                                            onPressed: () {
+                                              login();
+                                            },
+                                            color: fa_color_secondary,
+                                            elevation: 0,
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(8)),
+                                            child: Text(
+                                              "Login",
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.w400,
+                                                  fontSize: 15,
+                                                  color: Colors.white),
                                             ),
                                           ),
-                                          SizedBox(
-                                            height: 2,
-                                          ),
-                                          Align(
-                                            alignment: Alignment.topLeft,
-                                            child: InkWell(
-                                              onTap: () {
-                                                showGeneralDialog(
-                                                  barrierLabel: "Label",
-                                                  barrierDismissible: true,
-                                                  barrierColor: Colors.black
-                                                      .withOpacity(0.5),
-                                                  transitionDuration: Duration(
-                                                      milliseconds: 700),
-                                                  context: context,
-                                                  pageBuilder:
-                                                      (context, anim1, anim2) {
-                                                    return Align(
-                                                        alignment:
-                                                            Alignment.center,
-                                                        child: Column(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .start,
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .center,
-                                                          children: [
-                                                            Padding(
-                                                              padding:
-                                                                  EdgeInsets
-                                                                      .fromLTRB(
-                                                                          3.0,
-                                                                          100,
-                                                                          3.0,
-                                                                          0),
-                                                              child: Container(
-                                                                  child:
-                                                                      Material(
-                                                                child: Column(
-                                                                    crossAxisAlignment:
-                                                                        CrossAxisAlignment
-                                                                            .start,
-                                                                    mainAxisAlignment:
-                                                                        MainAxisAlignment
-                                                                            .spaceEvenly,
-                                                                    children: <
-                                                                        Widget>[
-                                                                      Row(
-                                                                        crossAxisAlignment:
-                                                                            CrossAxisAlignment.start,
-                                                                        mainAxisAlignment:
-                                                                            MainAxisAlignment.start,
-                                                                        children: [
-                                                                          Padding(
-                                                                              padding: EdgeInsets.fromLTRB(21, 45, 0, 10),
-                                                                              child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.start, children: <Widget>[
-                                                                                Text(
-                                                                                  "Forgot Password",
-                                                                                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16, color: fa_color_secondary),
-                                                                                ),
-                                                                                Padding(
-                                                                                  padding: EdgeInsets.only(top: 10),
-                                                                                  child: Align(
-                                                                                    child: Text(
-                                                                                      "Enter your registrated email address to \n receive password reset instruction",
-                                                                                      style: TextStyle(fontWeight: FontWeight.w300, fontSize: 13, color: fa_sub_heading),
-                                                                                    ),
-                                                                                    alignment: Alignment.center,
-                                                                                  ),
-                                                                                ),
-                                                                              ])),
-                                                                        ],
-                                                                      ),
-                                                                      Padding(
-                                                                        padding: EdgeInsets.fromLTRB(
-                                                                            17,
-                                                                            40,
-                                                                            0,
-                                                                            18),
-                                                                        child: _entryField(
-                                                                            "EMAIL",
-                                                                            _emailcontroller),
-                                                                      ),
-                                                                      Container(
-                                                                        padding: EdgeInsets.only(
-                                                                            left:
-                                                                                16,
-                                                                            right:
-                                                                                16,
-                                                                            top:
-                                                                                16,
-                                                                            bottom:
-                                                                                16),
-                                                                        decoration:
-                                                                            BoxDecoration(
-                                                                          borderRadius:
-                                                                              BorderRadius.circular(8),
-                                                                        ),
-                                                                        child:
-                                                                            MaterialButton(
-                                                                          minWidth:
-                                                                              MediaQuery.of(context).size.width - 32,
-                                                                          height:
-                                                                              54,
-                                                                          onPressed:
-                                                                              () {
-                                                                            _displayDialog(context);
-                                                                          },
-                                                                          color:
-                                                                              fa_color_secondary,
-                                                                          elevation:
-                                                                              0,
-                                                                          shape:
-                                                                              RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                                                                          child:
+                                        ),
+                                        SizedBox(
+                                          height: 2,
+                                        ),
+                                        Align(
+                                          alignment: Alignment.topLeft,
+                                          child: InkWell(
+                                            onTap: () {
+                                              showGeneralDialog(
+                                                barrierLabel: "Label",
+                                                barrierDismissible: true,
+                                                barrierColor: Colors.black
+                                                    .withOpacity(0.5),
+                                                transitionDuration:
+                                                    Duration(milliseconds: 700),
+                                                context: context,
+                                                pageBuilder:
+                                                    (context, anim1, anim2) {
+                                                  return Align(
+                                                      alignment:
+                                                          Alignment.center,
+                                                      child: Column(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .start,
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          Padding(
+                                                            padding: EdgeInsets
+                                                                .fromLTRB(
+                                                                    3.0,
+                                                                    100,
+                                                                    3.0,
+                                                                    0),
+                                                            child: Container(
+                                                                child: Material(
+                                                              child: Column(
+                                                                  crossAxisAlignment:
+                                                                      CrossAxisAlignment
+                                                                          .start,
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .spaceEvenly,
+                                                                  children: <
+                                                                      Widget>[
+                                                                    Row(
+                                                                      crossAxisAlignment:
+                                                                          CrossAxisAlignment
+                                                                              .start,
+                                                                      mainAxisAlignment:
+                                                                          MainAxisAlignment
+                                                                              .start,
+                                                                      children: [
+                                                                        Padding(
+                                                                            padding: EdgeInsets.fromLTRB(
+                                                                                21,
+                                                                                45,
+                                                                                0,
+                                                                                10),
+                                                                            child:
+                                                                                Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.start, children: <Widget>[
                                                                               Text(
-                                                                            "Reset Password",
-                                                                            style: TextStyle(
-                                                                                fontWeight: FontWeight.w400,
-                                                                                fontSize: 15,
-                                                                                color: Colors.white),
-                                                                          ),
+                                                                                "Forgot Password",
+                                                                                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16, color: fa_color_secondary),
+                                                                              ),
+                                                                              Padding(
+                                                                                padding: EdgeInsets.only(top: 10),
+                                                                                child: Align(
+                                                                                  child: Text(
+                                                                                    "Enter your registrated email address to \n receive password reset instruction",
+                                                                                    style: TextStyle(fontWeight: FontWeight.w300, fontSize: 13, color: fa_sub_heading),
+                                                                                  ),
+                                                                                  alignment: Alignment.center,
+                                                                                ),
+                                                                              ),
+                                                                            ])),
+                                                                      ],
+                                                                    ),
+                                                                    Padding(
+                                                                      padding: EdgeInsets
+                                                                          .fromLTRB(
+                                                                              17,
+                                                                              40,
+                                                                              0,
+                                                                              18),
+                                                                      child: _entryField(
+                                                                          "EMAIL",
+                                                                          _emailcontroller),
+                                                                    ),
+                                                                    Container(
+                                                                      padding: EdgeInsets.only(
+                                                                          left:
+                                                                              16,
+                                                                          right:
+                                                                              16,
+                                                                          top:
+                                                                              16,
+                                                                          bottom:
+                                                                              16),
+                                                                      decoration:
+                                                                          BoxDecoration(
+                                                                        borderRadius:
+                                                                            BorderRadius.circular(8),
+                                                                      ),
+                                                                      child:
+                                                                          MaterialButton(
+                                                                        minWidth:
+                                                                            MediaQuery.of(context).size.width -
+                                                                                32,
+                                                                        height:
+                                                                            54,
+                                                                        onPressed:
+                                                                            () {
+                                                                          _displayDialog(
+                                                                              context);
+                                                                        },
+                                                                        color:
+                                                                            fa_color_secondary,
+                                                                        elevation:
+                                                                            0,
+                                                                        shape: RoundedRectangleBorder(
+                                                                            borderRadius:
+                                                                                BorderRadius.circular(8)),
+                                                                        child:
+                                                                            Text(
+                                                                          "Reset Password",
+                                                                          style: TextStyle(
+                                                                              fontWeight: FontWeight.w400,
+                                                                              fontSize: 15,
+                                                                              color: Colors.white),
                                                                         ),
                                                                       ),
-                                                                    ]),
-                                                              )),
-                                                            ),
-                                                          ],
-                                                        ));
-                                                  },
-                                                  transitionBuilder: (context,
-                                                      anim1, anim2, child) {
-                                                    return SlideTransition(
-                                                      position: Tween(
-                                                              begin:
-                                                                  Offset(0, 1),
-                                                              end: Offset(0, 0))
-                                                          .animate(anim1),
-                                                      child: child,
-                                                    );
-                                                  },
-                                                );
-                                              },
-                                              child: Text(
-                                                "Forgot Password?",
-                                                style: TextStyle(
-                                                    fontWeight: FontWeight.w400,
-                                                    fontSize: 13,
-                                                    color: fa_color_secondary),
-                                              ),
+                                                                    ),
+                                                                  ]),
+                                                            )),
+                                                          ),
+                                                        ],
+                                                      ));
+                                                },
+                                                transitionBuilder: (context,
+                                                    anim1, anim2, child) {
+                                                  return SlideTransition(
+                                                    position: Tween(
+                                                            begin: Offset(0, 1),
+                                                            end: Offset(0, 0))
+                                                        .animate(anim1),
+                                                    child: child,
+                                                  );
+                                                },
+                                              );
+                                            },
+                                            child: Text(
+                                              "Forgot Password?",
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.w400,
+                                                  fontSize: 13,
+                                                  color: fa_color_secondary),
                                             ),
                                           ),
-                                        ]),
-                                  ])),
-                          Align(
-                              alignment: Alignment.bottomCenter,
-                              child: Padding(
-                                padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
-                                child: InkWell(
-                                  onTap: () {
-                                    NewUserSignup2().launch(context);
-                                  },
-                                  child: RichText(
-                                    text: TextSpan(
-                                      text: "Don't have an account? ",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w400,
-                                          fontSize: 13,
-                                          color: fa_sub_heading),
-                                      children: <TextSpan>[
-                                        TextSpan(
-                                            text: 'Sign Up',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w400,
-                                                fontSize: 13,
-                                                color: fa_color_secondary))
-                                      ],
-                                    ),
+                                        ),
+                                      ]),
+                                ])),
+                        Align(
+                            alignment: Alignment.bottomCenter,
+                            child: Padding(
+                              padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
+                              child: InkWell(
+                                onTap: () {
+                                  NewUserSignup2().launch(context);
+                                },
+                                child: RichText(
+                                  text: TextSpan(
+                                    text: "Don't have an account? ",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 13,
+                                        color: fa_sub_heading),
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                          text: 'Sign Up',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w400,
+                                              fontSize: 13,
+                                              color: fa_color_secondary))
+                                    ],
                                   ),
                                 ),
-                              ))
-                        ])),
-                  ),
-                  Align(
-                      alignment: Alignment.bottomCenter,
-                      child: FadeAnimation(
-                          2.5,
-                          Image.asset(
-                            'assets/copyright.png',
-                            height: 48.0,
-                            width: 182.0,
-                            fit: BoxFit.cover,
-                          ),
-                          Curves.slowMiddle))
-                ],
-              ))),
+                              ),
+                            ))
+                      ])),
+                ),
+                Align(
+                    alignment: Alignment.bottomCenter,
+                    child: FadeAnimation(
+                        2.5,
+                        Image.asset(
+                          'assets/copyright.png',
+                          height: 48.0,
+                          width: 182.0,
+                          fit: BoxFit.cover,
+                        ),
+                        Curves.slowMiddle))
+              ],
+            )),
+      )),
     );
   }
 
@@ -464,6 +479,10 @@ class ReturnLoginScreenState extends State<ReturnLoginScreen> {
   }
 
   login() async {
+    setState(() {
+      _isLoading = true;
+    });
+
     Map data = {
       'email': _emailcontroller.text,
       "password": _passwordcontroller.text,
@@ -491,13 +510,14 @@ class ReturnLoginScreenState extends State<ReturnLoginScreen> {
         String token = jsonResponse["data"]["token"].toString();
         prefs.setString('token', token);
         setState(() {
-          isApiCallProcess = false;
-          //  ReturnLoginScreen().launch(context);
-
+          _isLoading = false;
           HomeBase().launch(context);
         });
       }
-    } else if (response.statusCode == 401) {
+    } else if (response.statusCode == 401 || response.statusCode == 422) {
+      setState(() {
+        _isLoading = false;
+      });
       jsonResponse = json.decode(await response.stream.bytesToString());
       t.Toast.show(jsonResponse["message"].toString(), context,
           duration: t.Toast.LENGTH_LONG,
@@ -506,7 +526,7 @@ class ReturnLoginScreenState extends State<ReturnLoginScreen> {
           textColor: Colors.white);
     } else {
       setState(() {
-        isApiCallProcess = false;
+        _isLoading = false;
       });
 
       jsonResponse = json.decode(await response.stream.bytesToString());
@@ -530,6 +550,10 @@ class ReturnLoginScreenState extends State<ReturnLoginScreen> {
             backgroundColor: Colors.red,
             textColor: Colors.white);
       } else {
+        setState(() {
+          _isLoading = false;
+        });
+
         t.Toast.show(jsonResponse["message"].toString(), context,
             duration: t.Toast.LENGTH_LONG,
             gravity: t.Toast.BOTTOM,
